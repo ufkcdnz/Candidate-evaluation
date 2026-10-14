@@ -158,7 +158,11 @@ st.markdown("""
 # Veri Yükleme Fonksiyonu
 @st.cache_data
 def load_data():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
     csv_candidates = [
+        os.path.join(current_dir, "degerlendirilmis_basvurular.csv"),
+        os.path.join(current_dir, "TEKNOFEST Yönetim Kurulu Aday Üye Başvuru Formu.csv"),
         "degerlendirilmis_basvurular.csv",
         "TEKNOFEST Yönetim Kurulu Aday Üye Başvuru Formu.csv"
     ]
@@ -167,9 +171,9 @@ def load_data():
         if os.path.exists(f):
             file_to_load = f
             break
-    
+
     if not file_to_load:
-        all_csvs = glob.glob("*.csv")
+        all_csvs = glob.glob(os.path.join(current_dir, "*.csv")) + glob.glob("*.csv")
         if all_csvs:
             file_to_load = all_csvs[0]
 
@@ -180,6 +184,7 @@ def load_data():
         df = pd.read_csv(file_to_load, encoding='utf-8-sig')
     except Exception:
         df = pd.read_csv(file_to_load, encoding='utf-8')
+    return df
 
     # Eğer puanlanmamışsa evaluate.py'yi otomatik tetikleyelim
     if 'toplam_puan' not in df.columns:
